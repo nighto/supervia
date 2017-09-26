@@ -24,6 +24,9 @@ const returnStationById = (station, id) => station.properties.sigla === id
 axios.get(SUPERVIA_API).then(res => {
     console.log(res)
 
+    // remove loading
+    document.getElementById('loading').remove()
+
     // initialize map
     let map = L.map('map').setView(INITIAL_LAT_LNG, INITIAL_ZOOM)
     L.tileLayer(MAPBOX_LIGHT, {
