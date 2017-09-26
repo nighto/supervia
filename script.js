@@ -1,14 +1,19 @@
+// SuperVia API with the sound announcements
 const SUPERVIA_API = 'https://cors-anywhere.herokuapp.com/http://webapisupervia.rio.rj.gov.br/api/v1/supervia'
+
+// GeoJSON with the Stations
+// source: http://data.rio/dataset/trem-supervia-estacoes
 const SUPERVIA_STATIONS_API = 'supervia_stations.geojson'
 
+// OpenStreetMap / Mapbox URL, for a nice background
 const MAPBOX_API_TOKEN = 'pk.eyJ1IjoiYXJsaW5kbyIsImEiOiJjaWljZDgwemYwMGFydWJrc2FlNW05ZjczIn0.rOROEuNNxKWUIcj6Uh4Xzg'
 const MAPBOX_LIGHT = `https://api.mapbox.com/styles/v1/arlindo/cj6mameic8ues2spffqvh7hx1/tiles/256/{z}/{x}/{y}?access_token=${MAPBOX_API_TOKEN}`
 
+// map initial view
 const INITIAL_LAT_LNG = [-22.9, -43.4]
 const INITIAL_ZOOM = 11
 
 // get stations data
-// http://data.rio/dataset/trem-supervia-estacoes/resource/0cc4eece-3584-4da9-a5ba-47ac3b929fa5
 let stations
 axios.get(SUPERVIA_STATIONS_API).then(res => { stations = res.data })
 
