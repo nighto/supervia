@@ -15,7 +15,38 @@ const INITIAL_ZOOM = 11
 
 // get stations data
 let stations
-axios.get(SUPERVIA_STATIONS_API).then(res => { stations = res.data })
+axios
+    .get(SUPERVIA_STATIONS_API)
+    .then(res => {
+        // store it
+        stations = res.data
+
+        // data.rio data doesn't have Mercadão de Madureira station, add it manually
+        stations.features.push(
+            {
+                "type":"Feature",
+                "geometry":{
+                    "type":"Point",
+                    "coordinates":[
+                        -43.3368660,
+                        -22.8732169
+                    ]
+                },
+                "properties":{
+                    "estacao":"Mercadão de Madureira",
+                    "sigla":"MGO",
+                    "ramal":"Belford Roxo",
+                    "latitude":"-22.8732169",
+                    "longitude":"-43.3368660",
+                    "nomeantigo":"Magno",
+                    "bicicletario":"0",
+                    "km":"18.154",
+                    "endereco":"Avenida Ministro Edgard Romero, 125",
+                    "cep":"21360-201"
+                }
+            }
+        )
+    })
 
 // return station by its ID
 const returnStationById = (station, id) => {
