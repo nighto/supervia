@@ -18,11 +18,45 @@ let stations
 axios.get(SUPERVIA_STATIONS_API).then(res => { stations = res.data })
 
 // return station by its ID
-const returnStationById = (station, id) => station.properties.sigla === id
+const returnStationById = (station, id) => {
+    // some stations are wrong on data.rio data, fixing it here
+    // so we don't change the original, open data
+
+    // Central do Brasil code is 'DPO', not 'CBL'
+    if (id === 'DPO' && station.properties.sigla === 'CBL') {
+        return true
+    }
+    // Corte Oito code is 'C08', not 'COO'
+    if (id === 'C08' && station.properties.sigla === 'COO') {
+        return true
+    }
+    // Magalhães Bastos is 'MAG', not 'MGA'
+    if (id === 'MAG' && station.properties.sigla === 'MGA') {
+        return true
+    }
+    // Marechal Hermes is 'MAL', not 'MHS'
+    if (id === 'MAL' && station.properties.sigla === 'MHS') {
+        return true
+    }
+    // Pavuna/São João de Meriti code is 'PVA', not 'PVN'
+    if (id === 'PVA' && station.properties.sigla === 'PVN') {
+        return true
+    }
+    // Praça da Bandeira code is 'LAU', not 'PBA'
+    if (id === 'LAU' && station.properties.sigla === 'PBA') {
+        return true
+    }
+    // Senador Camará is 'SEM', not 'SEN'
+    if (id === 'SEM' && station.properties.sigla === 'SEN') {
+        return true
+    }
+
+    // regular behavior
+    return station.properties.sigla === id
+}
 
 // get data, then
 axios.get(SUPERVIA_API).then(res => {
-    console.log(res)
 
     // remove loading
     document.getElementById('loading').remove()
@@ -39,8 +73,9 @@ axios.get(SUPERVIA_API).then(res => {
         return window.alert('Erro na API da SuperVia, favor atualizar a página.')
     }
 
-    // only parse last 100 messages, as others are old
-    let messages = res.data.slice(-100)
+    let messages = res.data
+
+    console.log('messages', messages)
 
     // for each SuperVia message
     messages.map(message => {
@@ -48,11 +83,30 @@ axios.get(SUPERVIA_API).then(res => {
         let station = stations.features.find( station => returnStationById(station, message.STOP_CODE) )
 
         if (station) {
+            // record the message as a station property
+            station.properties.messages = station.properties.messages || []
+            station.properties.messages.push(message)
+        }
+    })
+
+    console.log('stations', stations)
+
+    // for each SuperVia station
+    stations.features.map(station => {
+        // if it has messages
+        if (station.properties.messages && station.properties.messages.length > 0) {
             // find its coords
             let stationCoords = [station.geometry.coordinates[1], station.geometry.coordinates[0]]
 
-            // create its text
-            let text = message.PLAY_TIME + '<br>' + message.FULL_MESSAGE
+            // create its text with last message
+            let lastMessage = station.properties.messages[station.properties.messages.length - 1]
+            let text = lastMessage.PLAY_TIME + '<br>' + lastMessage.FULL_MESSAGE
+
+            // create its text with all messages combined
+            // let text = ''
+            // station.properties.messages.map(message => {
+            //     text += message.PLAY_TIME + '<br>' + message.FULL_MESSAGE + '<br><br>'
+            // })
 
             // add a marker
             let marker = L.marker(stationCoords).addTo(map).bindPopup(text)
