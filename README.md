@@ -1,6 +1,8 @@
 # [nighto.github.io/supervia](https://nighto.github.io/supervia)
 A map of SuperVia audio announcements.
 
+[![Screen Capture](https://user-images.githubusercontent.com/397851/30988224-09b37818-a470-11e7-8c64-1b3ab8ececa1.png)](https://nighto.github.io/supervia)
+
 ## Acknowledgements
 This project can only exist because [SuperVia](http://www.supervia.com.br/) and [Governo do Estado do Rio de Janeiro](http://www.rj.gov.br/) decided to release this data as a public API, so obviously we should be thankful for that. Nevertheless, these are the awesome projects that make this hack possible, in no particular order:
 
